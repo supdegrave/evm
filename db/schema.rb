@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131208104651) do
+ActiveRecord::Schema.define(version: 20131211015325) do
+
+  create_table "functions", force: true do |t|
+    t.string   "name",       default: "", null: false
+    t.string   "email",      default: "", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "functions", ["name"], name: "index_functions_on_name", unique: true
 
   create_table "roles", force: true do |t|
     t.string   "name"

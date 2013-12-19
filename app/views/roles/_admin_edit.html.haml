@@ -1,0 +1,9 @@
+- unless role.name == 'admin'
+  %tr
+    %td= role.name
+    / %td= # link_to  "Delete", 
+    /               role_path(role), 
+    /               remote: true, 
+    /               :data => { :confirm => "Are you sure?" }, 
+    /               :method => :delete 
+    / TODO: figure out why destroy_role_path is missing from routes

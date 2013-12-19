@@ -1,0 +1,1 @@
+json.html render partial: 'users/admin_edit.html.haml', locals: { user: @user }

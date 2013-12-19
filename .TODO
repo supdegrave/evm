@@ -1,0 +1,39 @@
+TODO: add migration to insert 'admin' and 'Board Member' roles + other known roles from spreadsheet
+TODO: set a unique constraint on role/resource_id/resource_name 
+
+admin.js.coffee
+# TODO: add change filter on role selector to reset function if 'admin' or 'Board Member' is chosen 
+
+
+app/views/admin/index.html.haml:
+-# TODO: add error-handling display for Users
+
+app/views/admin/index.html.haml:
+-# TODO: determine why having multiple input fields blocks submit-on-return
+
+app/views/admin/index.html.haml:
+-# TODO: add error-handling display for Functions 
+
+app/views/admin/index.html.haml:
+-# TODO: add error-handling display for Roles 
+
+app/views/functions/_admin_edit.html.haml:
+/ *** TODO: uncomment delete link when ready to wire up ajax return 
+
+app/views/roles/_admin_edit.html.haml:
+/ TODO: figure out why destroy_role_path is missing from routes
+
+app/views/users/_admin_edit.html.haml:
+-# TODO: convert 'Delete User' to icon, with remote method call
+
+config/routes.rb:
+# TODO: it would be deeply useful to grok this completely: 
+
+config/routes.rb:
+# TODO: resourcify admin routes. I think that means changing #invitation to #create 
+
+spec/features/admin_actions_spec.rb:
+# TODO: look into webkit driver rather than selenium 
+
+spec/features/admin_actions_spec.rb:
+# TODO: figure out why ajax update isn't working in selenium 
