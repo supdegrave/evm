@@ -24,6 +24,7 @@ class FunctionsController < ApplicationController
   # POST /functions
   # POST /functions.json
   def create
+    function_params['name'].strip!
     @function = Function.new(function_params)
 
     respond_to do |format|
@@ -69,6 +70,6 @@ class FunctionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def function_params
-      params.require(:function).permit(:name)
+      params.require(:function).permit(:name, :email)
     end
 end

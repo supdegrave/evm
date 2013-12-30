@@ -10,6 +10,7 @@ EventVolunteerManager::Application.routes.draw do
   post "/admin", to: "admin#invitation"
   get "/admin/edit/:id", to: "admin#edit_user", as: 'admin_edit'
   post "/admin/add_role", to: "admin#add_role"
+  get "/admin/orgchart", to: "admin#org_chart"
   
   put "/users/:id", to: "users#update"
   

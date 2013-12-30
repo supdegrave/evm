@@ -1,0 +1,14 @@
+#l1
+  %h4= board_member.name
+  - board_member.owned_functions.each do |func|
+    %h5= func.name 
+    %ul 
+      %li 
+        Lead: 
+        = func.lead.name
+      %li 
+        Co-Lead: 
+        = func.colead.name
+      %li 
+        Mentor: 
+        = func.mentor.name

@@ -22,4 +22,12 @@ class User < ActiveRecord::Base
       {function: function , role: role.name}
     end
   end
+  
+  def owned_functions
+    Function.with_role "Owner", self
+  end
+  
+  def is_board_member? 
+    self.has_role? "Board Member"
+  end
 end

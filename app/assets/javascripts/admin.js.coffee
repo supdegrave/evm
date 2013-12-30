@@ -1,65 +1,114 @@
-# console.log $("button#add-role")
+# 
+# get / set user data 
+# 
+AdminData = {
+  SelectedUser: null
+  UserData: {}
+}
 
-$("button#add-role").click( (evt) => 
-  selectedFunction = $("#new-function option:selected")
-  selectedRole = $("#new-role option:selected")
+# 
+# modal dialog select elements 
+# 
+selRole = $("#new-role")
+selFunc = $("#new-function")
+
+
+# 
+# role select event handlers
+# 
+# ##### TODO ###############
+# * move hard-coded ["admin", "Board Member"] to external js file to allow configuration
+#   - js file should simply assign an array of strings to variable
+#   - update selRole.change handler to set that variable to [] if null / undefined
+selRole.change (evt) ->
+  isNonFunctionRole = selRole.children().filter(":selected").text() in ["admin", "Board Member"]
+  selFunc.prop("disabled", isNonFunctionRole) 
+  selFunc.prop('selectedIndex', 0) if isNonFunctionRole
+
+
+# 
+# 'add role' button event handler
+#
+$("button#add-role").click (evt) -> 
+  optRole = selRole.children().filter(":selected") 
+  optFunc = selFunc.children().filter(":selected") 
   
-  # do not allow blank role
-  unless String.empty == selectedRole.val()
-    role = selectedRole.text()
-    
-    # if role is admin or Board Member, allow blank func
-    if role in ["admin", "Board Member"] 
-      $("#new-function").val("")
-      func = ""
-    else 
-      func = if selectedFunction.val() != "" then selectedFunction.val() else null
-      
-    # TODO: don't allow func without role 
-      
-    unless func == null 
-      user_id = $("#myModal .modal-user-roles").attr("data-user-id")
-      
+  if optRole.val().length # do not allow blank role
+    role = optRole.text()
+    func = if optFunc.val().length then optFunc.val() else if selFunc.prop("disabled") then "" else null 
+        
+    unless func == null
       $.ajax({
-        url: "/admin/add_role",
+        url: "/admin/add_role"
+        type: "POST"
+        dataType: "json"
         data: {
           user: {
-            user_id: user_id
+            user_id: AdminData.SelectedUser
             function_id: func unless func == ""
             role_name: role
           }
-        },
-        type: "POST",
-        dataType : "json",
-        success: ( json ) =>
-          $('#myModal').foundation('reveal', 'close')
-          roles_list = $("ul.user-roles[data-user-id='" + user_id + "']")
-          roles_list.attr("data-user-roles", JSON.stringify(json))
+        }
+        success: (json) =>
+          AdminData.UserData[AdminData.SelectedUser] = json
+          showRoleList AdminData.SelectedUser
+          resetModal()
+        error: (xhr, status) =>
+          modalError = $("div#modal-error")
           
-          appendRoles(roles_list)
-        ,
-        error: ( xhr, status ) =>
-          console.log "Sorry, there was a problem!" 
+          # FFS why does coffeescript turn for..in into a regular for loop? 
+          # for msg in xhr.responseJSON 
+          #   modalError.append(xhr.responseJSON[msg] + "<br/>")
+          
+          modalError.append xhr.responseJSON["error"]     
+          resetModalSelects()     
+          modalError.show()            
       });
     else
       console.log "ERROR - no function selected" 
-    
-  # do not allow double-assignment (maybe this should be a DB unique constraint)
-  # reset form values 
-)
+
+
+# 
+# cancel button event handler
+# 
+$("button#cancel-add-role").click -> resetModal()
+
+
+# 
+# reset modal selects, hide dialog
+#
+resetModalSelects = () ->   
+  selRole.prop('selectedIndex', 0)
+  selFunc.prop('selectedIndex', 0)
+   
+resetModal = () -> 
+  $('#myModal').foundation('reveal', 'close')
+  AdminData.SelectedUser = null
+  resetModalSelects()
+  clearModalErrors()
+  
+clearModalErrors = () ->
+  $("div#modal-error").empty().hide()
+
 
 # 
 # insert new user, function, role into page 
 # 
-handleAjaxResponse = (model) => 
+handleAjaxResponse = (model) -> 
   modelForm = $("#new_" + model)
 
-  modelForm.on("ajax:success", (e, data, status, xhr)-> 
-    $("[id^='" + model + "_']").val(String.empty) 
-    $("#new_" + model).parent().before(data.html) 
+  modelForm.on("ajax:success", (e, data, status, xhr) -> 
+    form_row = $(e.target).parent()
+    form_row.find('input').val(String.empty) 
+    form_row.before(data.html) 
+    
+    if ("user" == model)
+      new_user_data = $(data.html).find("ul").data()
+      AdminData.UserData[new_user_data.userId] = new_user_data.userRoles
+      bindRoleEditEvents()
   )
 
-  modelForm.on('ajax:error', (e, xhr, status, error)-> 
+  modelForm.on('ajax:error', (e, xhr, status, error) -> 
     console.log e
     console.log xhr
     console.log status
@@ -70,53 +119,51 @@ handleAjaxResponse "user"
 handleAjaxResponse "function"
 handleAjaxResponse "role"
 
+
 # 
 # wire up mouseover / mouseout toggle of role edit link 
 # 
-$(".role-edit")
-  .mouseenter( (evt) => $(evt.target).children("span").show() )
-  .mouseleave( (evt) => $(evt.target).children("span").hide() );
+bindRoleEditEvents = () ->
+  $(".role-edit")
+    .mouseenter( (evt) -> $(evt.target).children("span").show() )
+    .mouseleave( (evt) -> $(evt.target).children("span").hide() )
 
-appendRoles = (list, roles = null) => 
-  list.empty()
-  if roles == null
-    roles = list.attr('data-user-roles')
-  else
-    showDelete = true
+bindRoleEditEvents()
 
-  roles = JSON.parse(roles)
-  
-  for role in roles
-    # role = JSON.parse(role)
-    listItem = ["<li>"]
-    listItem.push (role["function"] || "")
-    listItem.push " " if role["function"]
-    listItem.push role["role"]
-    listItem.push " <span class='delete-role'>[delete]</span>" if showDelete
-    listItem.push "</li>"
-    list.append(listItem.join("")) 
+
+# 
+# show list of roles for given user 
+# 
+# showRoleList = (list, modal = false) -> 
+showRoleList = (userId, modal = false) -> 
+  list = if modal then $("#myModal .modal-user-roles") else $("ul.user-roles[data-user-id='" + userId + "']") 
+  listItems = []
+
+  for role in AdminData.UserData[userId]
+    listItems.push "<li>"
+    listItems.push role["function"]
+    listItems.push " " if role["function"]
+    listItems.push role["role"]
+    listItems.push " <span class='delete-role'>[delete]</span>" if modal
+    listItems.push "</li>"
+
+  list.empty().append(listItems.join("")) 
+
 
 # 
 # show modal dialog with roles for selected user
 #  
-$(".role-edit span").click (evt) => 
+$(".role-edit span").click (evt) -> 
   target = $(evt.target).hide()
-  list = target.next()
-  modalList = $("#myModal .modal-user-roles")
-  modalList.attr('data-user-id', list.attr('data-user-id'))
-  
-  appendRoles(modalList, list.attr('data-user-roles'))
-  # appendRoles(modalList, JSON.parse(list.attr('data-user-roles')))
+  AdminData.SelectedUser = target.next().data('user-id')
+  showRoleList(AdminData.SelectedUser, true)
+
 
 # 
 # populate user roles on admin page
 # 
-$.each($("ul.user-roles"), (inx, val) =>
+$.each $("ul.user-roles"), (inx, val) ->
   list = $(val)
-  userId = list.attr('data-user-id')  
-  appendRoles(list)
-);
-
-
-# ##### SQL TO CLEAR ROLES #####
-# delete from roles where id > 106; delete from users_roles where user_id != 2; delete from users_roles where role_id != 56; select * from roles; select * from users_roles; 
+  userId = list.data('user-id')
+  AdminData.UserData[userId] = list.data('user-roles')
+  showRoleList userId

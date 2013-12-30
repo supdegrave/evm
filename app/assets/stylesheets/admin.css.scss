@@ -9,3 +9,11 @@
   padding: 0px 3px; 
   background-color: #ccc;
 }
+
+div#modal-error {
+  border: 1px solid red; 
+  background-color: yellow;
+  color: red; 
+  padding: 2px 5px; 
+  display: none; 
+}

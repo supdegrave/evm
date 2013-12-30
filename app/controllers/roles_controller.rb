@@ -24,6 +24,7 @@ class RolesController < ApplicationController
   # POST /roles
   # POST /roles.json
   def create
+    role_params["name"].strip!
     @role = Role.new(role_params)
 
     respond_to do |format|
