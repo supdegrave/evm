@@ -14,9 +14,10 @@ class AdminController < ApplicationController
   end
 
   def invitation
-    strong_params = params.require(:user).permit(:email, :first_name)
-    temp_first_name = {first_name: params[:user][:email].split("@")[0]}
-    @user = User.new(strong_params.merge(temp_first_name))
+    strong_params = params.require(:user).permit(:email, :first_name, :password, :password_confirmation)
+    strong_params[:first_name] = params[:user][:email].split("@")[0]
+    strong_params[:password] = strong_params[:password_confirmation] = params[:user][:email]
+    @user = User.new(strong_params)
     
     respond_to do |format|
       if @user.save(validate: false)

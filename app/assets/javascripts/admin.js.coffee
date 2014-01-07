@@ -80,6 +80,7 @@ $("button#cancel-add-role").click -> resetModal()
 resetModalSelects = () ->   
   selRole.prop('selectedIndex', 0)
   selFunc.prop('selectedIndex', 0)
+  selFunc.prop("disabled", false) 
    
 resetModal = () -> 
   $('#myModal').foundation('reveal', 'close')

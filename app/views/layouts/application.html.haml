@@ -10,4 +10,15 @@
     %main(role="main")
       = render 'layouts/messages' 
       = yield 
+      
+      - unless Rails.env.production?
+        %hr
+        %div 
+          Dev links: 
+          %span(style= "font-size: smaller;") (app/views/layouts/application.html.haml)
+          %br
+          = link_to "Requirements", "https://docs.google.com/a/updegrave.com/document/d/1tp0sGx7e7X-PYKchQMBHr5WBMU_WGhKg2RgiBcN-4I4/edit" 
+          %span //
+          = link_to "2013 Leads List spreadsheet", "https://docs.google.com/spreadsheet/ccc?key=0AhLaUQerhfY3dHV4QnZ6aDdUQzJweW5zQmtGaHM4NWc&usp=drive_web#gid=0"
+      
       = javascript_include_tag "application"

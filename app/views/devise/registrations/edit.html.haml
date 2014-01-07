@@ -1,16 +1,47 @@
 %h2
   Edit #{resource_name.to_s.humanize} 
-= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-vertical' }) do |f|
+/ = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-vertical' }) do |f|
+= simple_form_for(resource, :as => resource_name, :url => user_path(resource), :html => { :method => :put, :class => 'form-vertical' }) do |f|
   = f.error_notification
   = display_base_errors resource
-  = f.input :first_name, :required => true, :autofocus => true
-  = f.input :last_name
-  = f.input :email, :required => true
-  = f.input :password, :autocomplete => "off", :hint => "leave it blank if you don't want to change it", :required => false
-  = f.input :password_confirmation, :required => false
-  = f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true
+  
+  %fieldset
+    %legend Name and Contact Information
+    = f.input :first_name, :required => true
+    = f.input :last_name
+    = f.input :playa_name, label: "Playa name (if you have one)"
+    = f.input :email, :required => true
+    = f.input :skype_id, label: "Skype username"
+    
+  %fieldset
+    %legend Medical & Emergency Contact
+    = f.input :medical_concerns, as: :text
+    = f.input :emergency_contact
+    = f.input :emergency_contact_relation
+    = f.input :emergency_contact_phone
+    = f.input :emergency_contact_email
+    
+  %fieldset
+    %legend Change Password (leave blank if you don't want to change it)
+    = f.input :password, :autocomplete => "off", :required => false
+    = f.input :password_confirmation, :required => false
+    
+  / = f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true  
   = f.button :submit, 'Update', :class => 'btn-primary'
 %h3 Cancel my account
 %p
   Unhappy? #{link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete}.
 = link_to "Back", :back
+
+
+/ id: integer
+/ email: string
+/ first_name: string
+/ last_name: string
+/ playa_name: string
+/ skype_id: string
+/ emergency_contact: string
+/ emergency_contact_relation: string
+/ emergency_contact_phone: string
+/ emergency_contact_email: string
+/ medical_concerns: string

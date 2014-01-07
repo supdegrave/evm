@@ -21,24 +21,22 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
   
-  # admin update path - regular user path is via devise registrations 
   def update
-    authorize! :update, @user, :message => 'Not authorized as an administrator.'
-
-    user_params = params[:user]
-    if user_params[:password].blank? 
-      user_params.delete("password")
-      user_params.delete("password_confirmation")
-      user_params.delete("current_password")
-    end
-
-    strong_params = params.require(:user).permit(:email, :first_name, :last_name)
-
+    # request.env["HTTP_REFERER"] = "/admin/edit/<user_id>" or "/users/<user_id>" 
     user = User.find(params[:id])
-    if user.update_attributes(strong_params)
-      redirect_to admin_path, :notice => "User updated."
-    else
-      redirect_to admin_path, :alert => "Unable to update user."
+    # user_params = params[:user]
+    # if user_params[:password].blank? 
+    #   user_params.delete("password")
+    #   user_params.delete("password_confirmation")
+    #   user_params.delete("current_password")
+    # end
+    
+    if user == current_user 
+        current_user_update user
+    elsif current_user.has_role? :admin
+      admin_update user
+    else 
+      redirect_to home_path, message: 'Not authorized to edit user.'
     end
   end
     
@@ -50,6 +48,38 @@ class UsersController < ApplicationController
       redirect_to users_path, :notice => "User deleted."
     else
       redirect_to users_path, :notice => "Can't delete yourself."
+    end
+  end
+  
+  protected
+  def current_user_update(user)
+    clean_params
+    strong_params = params.require(:user).permit(:first_name, :last_name, :email, :playa_name, :skype_id, :emergency_contact, :emergency_contact_relation, :emergency_contact_phone, :emergency_contact_email, :medical_concerns)
+    
+    if user.update_attributes(strong_params)
+      redirect_to user_path(user), :notice => "User updated."
+    else
+      redirect_to user_path(user), :alert => "Unable to update user."
+    end 
+  end
+  
+  def admin_update(user)
+    clean_params
+    strong_params = params.require(:user).permit(:email, :first_name, :last_name)
+  
+    if user.update_attributes(strong_params)
+      redirect_to admin_path, :notice => "User updated."
+    else
+      redirect_to admin_path, :alert => "Unable to update user."
+    end
+  end
+  
+  def clean_params
+    user_params = params[:user]
+    if user_params[:password].blank? 
+      user_params.delete("password")
+      user_params.delete("password_confirmation")
+      user_params.delete("current_password")
     end
   end
 end

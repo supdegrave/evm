@@ -1,6 +1,11 @@
 * new migrations
-  - insert 'admin' and 'Board Member' roles (+ other known roles?) from spreadsheet (.gitignore it since it's site-specific)
-  - add email to function (and set default of function_name.to_sym.to_lower @ goingnowhere)
+  - insert known roles (.gitignore it since it's site-specific)
+    Board Member
+    Owner
+    Lead
+    Co-Lead
+    Mentor
+  - insert existing functions from `2013 Leads List spreadsheet`? 
   - add to User: reports_to, skype_id, etc (see requirements from Aqua)
 
 * org chart 
