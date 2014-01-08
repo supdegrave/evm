@@ -1,13 +1,7 @@
 * new migrations
   - insert existing functions from `2013 Leads List spreadsheet`? 
   
-* clear modal error display on any close of dialog, not just from [Add] / [Cancel]
-  - there's probably ondocumentready functionality similar to jQuery 
-
-* custom event? : call appendRoles on element ready or changed rather than explictly 
-
 admin.js.coffee
-* dynamically bind modal clicker on new user add
 * Update functions / roles lists when new items are added
   - push functions and roles into AdminData, bind selects 
 * move hard-coded ["admin", "Board Member"] to external js file to allow configuration
@@ -42,8 +36,9 @@ admin_controller.rb
 
 
 
-# ##### SQL TO CLEAR ROLES #####
-delete from users where id > 44; delete from roles where id > 161; delete from functions where id > 15; delete from users_roles where user_id != 2; delete from users_roles where role_id != 148; select * from roles; select * from users_roles;
+# ##### SQL TO CLEAR USERS / ROLES / FUNCTIONS #####
+delete from users where id > 44; delete from roles where id > 161; delete from functions where id > 15; delete from users_roles where user_id > 44; -- delete from users_roles where role_id > 157; 
+select * from roles; select * from users; select * from users_roles;
 
 # ##### COMPARE STRING CONCAT SPEED
 var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { "".length } console.log(new Date() - start); 

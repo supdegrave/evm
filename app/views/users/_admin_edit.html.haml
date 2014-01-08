@@ -3,7 +3,8 @@
   %td= link_to user.email, link
   %td= link_to user.name, link
   %td.role-edit
-    %span(data-reveal-id="myModal" data-user-id="#{user.id}") edit
+    / %span(data-reveal-id="myModal" data-user-id="#{user.id}") edit
+    %span(data-user-id="#{user.id}") edit
     %ul.user-roles(data-user-id="#{user.id}" data-user-roles="#{user.functions_roles.to_json}") 
   -# TODO: convert 'Delete User' to icon, with remote method call
   -# %td

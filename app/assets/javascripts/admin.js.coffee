@@ -84,13 +84,17 @@ resetModalSelects = () ->
    
 resetModal = () -> 
   $('#myModal').foundation('reveal', 'close')
+
+
+# 
+# modal dialog closed 
+# 
+$(document).on 'closed', '[data-reveal]', () ->
+  # console.log "closed"
   AdminData.SelectedUser = null
   resetModalSelects()
-  clearModalErrors()
-  
-clearModalErrors = () ->
   $("div#modal-error").empty().hide()
-
+  
 
 # 
 # insert new user, function, role into page 
@@ -107,11 +111,12 @@ handleAjaxResponse = (model) ->
       new_user_data = $(data.html).find("ul").data()
       AdminData.UserData[new_user_data.userId] = new_user_data.userRoles
       bindRoleEditEvents()
+      $('#myModal').foundation({bindings: 'events'});     
       
     # HACK: this is terrible, 
     # but temporary until I figure out how to dynamically bind modal clickers
     # and move to databound roles / functions display in modal
-    location.reload()
+    # location.reload()
   )
 
   modelForm.on('ajax:error', (e, xhr, status, error) -> 
@@ -128,11 +133,18 @@ handleAjaxResponse "role"
 
 # 
 # wire up mouseover / mouseout toggle of role edit link 
+# and show modal dialog with roles for selected user
 # 
 bindRoleEditEvents = () ->
   $(".role-edit")
     .mouseenter( (evt) -> $(evt.target).children("span").show() )
     .mouseleave( (evt) -> $(evt.target).children("span").hide() )
+    
+  $(".role-edit span").click (evt) -> 
+    target = $(evt.target).hide()
+    AdminData.SelectedUser = target.next().data('user-id')
+    showRoleList(AdminData.SelectedUser, true)
+    $('#myModal').foundation('reveal', 'open')
 
 bindRoleEditEvents()
 
@@ -154,15 +166,6 @@ showRoleList = (userId, modal = false) ->
     listItems.push "</li>"
 
   list.empty().append(listItems.join("")) 
-
-
-# 
-# show modal dialog with roles for selected user
-#  
-$(".role-edit span").click (evt) -> 
-  target = $(evt.target).hide()
-  AdminData.SelectedUser = target.next().data('user-id')
-  showRoleList(AdminData.SelectedUser, true)
 
 
 # 
