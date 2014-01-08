@@ -107,6 +107,11 @@ handleAjaxResponse = (model) ->
       new_user_data = $(data.html).find("ul").data()
       AdminData.UserData[new_user_data.userId] = new_user_data.userRoles
       bindRoleEditEvents()
+      
+    # HACK: this is terrible, 
+    # but temporary until I figure out how to dynamically bind modal clickers
+    # and move to databound roles / functions display in modal
+    location.reload()
   )
 
   modelForm.on('ajax:error', (e, xhr, status, error) -> 
