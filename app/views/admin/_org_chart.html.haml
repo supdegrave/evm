@@ -5,10 +5,10 @@
     %ul 
       %li 
         Lead: 
-        = func.lead.name
+        = func.lead.name unless func.nil? or func.lead.nil? 
       %li 
         Co-Lead: 
-        = func.colead.name
+        = func.colead.name unless func.nil? or func.colead.nil? 
       %li 
         Mentor: 
-        = func.mentor.name
+        = func.mentor.name unless func.nil? or func.mentor.nil? 

@@ -54,8 +54,9 @@ admin_controller.rb
 
 
 # ##### SQL TO CLEAR ROLES #####
-# delete from users where id > 28; delete from roles where id > 106; delete from users_roles where user_id != 2; delete from users_roles where role_id != 56; select * from roles; select * from users_roles;
+delete from users where id > 44; delete from roles where id > 161; delete from functions where id > 15; delete from users_roles where user_id != 2; delete from users_roles where role_id != 148; select * from roles; select * from users_roles;
 
+# ##### COMPARE STRING CONCAT SPEED
 var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { "".length } console.log(new Date() - start); 
 var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { 0 == "".length } console.log(new Date() - start);
 var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { "".match(/^$/) } console.log(new Date() - start); 
