@@ -11,19 +11,22 @@ AdminData = {
 (() -> 
   $.ajax {
     url: "/functions.json"
-    success: (json) => initCollection AdminData.Functions, json, selFunc
+    success: (json) => initCollection "Function", json
     error: (xhr, status) => console.log xhr, status
   }
   $.ajax {
     url: "/roles.json"
-    success: (json) => initCollection AdminData.Roles, json, selRole
+    success: (json) => initCollection "Role", json
     error: (xhr, status) => console.log xhr, status
   }
 )()
 
-initCollection = (collection, json, select) -> 
-  collection = json
-  select.empty().append( "<option/>" ).append( collection.map((obj) -> "<option value='" + obj.id + "'>" + obj.name + "</option>") )
+initCollection = (collectionName, json) -> 
+  collection = AdminData[collectionName.concat('s')] = json
+  $("#new-".concat(collectionName.toLowerCase()))
+    .empty()
+    .append( "<option/>" )
+    .append( collection.map((obj) -> "<option value='" + obj.id + "'>" + obj.name + "</option>") )
 
 
 # 
@@ -65,7 +68,7 @@ $("button#add-role").click (evt) ->
         data: {
           user: {
             user_id: AdminData.SelectedUser
-            function_id: func unless func == ""
+            function_id: func if func.length
             role_name: role
           }
         }
@@ -75,11 +78,6 @@ $("button#add-role").click (evt) ->
           resetModal()
         error: (xhr, status) =>
           modalError = $("div#modal-error")
-          
-          # FFS why does coffeescript turn for..in into a regular for loop? 
-          # for msg in xhr.responseJSON 
-          #   modalError.append(xhr.responseJSON[msg] + "<br/>")
-          
           modalError.append xhr.responseJSON["error"]     
           resetModalSelects()     
           modalError.show()            
@@ -119,26 +117,23 @@ $(document).on 'closed', '[data-reveal]', () ->
 # insert new user, function, role into page 
 # 
 handleAjaxResponse = (model) -> 
-  modelForm = $("#new_" + model)
-
-  modelForm.on("ajax:success", (e, data, status, xhr) -> 
-    form_row = $(e.target).parent()
-    form_row.find('input').val(String.empty) 
-    form_row.before(data.html) 
-    
-    if ("user" == model)
-      new_user_data = $(data.html).find("ul").data()
-      AdminData.UserData[new_user_data.userId] = new_user_data.userRoles
-      bindRoleEditEvents()
-      $('#myModal').foundation({bindings: 'events'});     
-  )
-
-  modelForm.on('ajax:error', (e, xhr, status, error) -> 
-    console.log e
-    console.log xhr
-    console.log status
-    console.log error
-  )
+  $("#new_" + model)
+    .on "ajax:success", (e, data, status, xhr) -> 
+      form_row = $(e.target).parent()
+      form_row.find('input').val(String.empty) 
+      
+      if ("user" == model)
+        form_row.before(data.html)
+        new_user_data = $(data.html).find("ul").data()
+        AdminData.UserData[new_user_data.userId] = new_user_data.userRoles
+        bindRoleEditEvents()
+        $('#myModal').foundation({bindings: 'events'});
+      else
+        collectionName = e.target.id.slice(4,5).toUpperCase().concat(e.target.id.slice(5))
+        initCollection collectionName, data
+        form_row.siblings().remove()
+        form_row.before(data.map (obj) -> "<tr><td>" + obj.name + "</td></tr>")
+    .on 'ajax:error', (e, xhr, status, error) -> console.log e, xhr, status, error
   
 handleAjaxResponse "user"
 handleAjaxResponse "function"

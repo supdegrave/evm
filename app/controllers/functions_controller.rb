@@ -30,7 +30,7 @@ class FunctionsController < ApplicationController
     respond_to do |format|
       if @function.save
         format.html { redirect_to @function, notice: 'Function was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @function }
+        format.json { render json: Function.all, status: :created, location: @function }
       else
         format.html { render action: 'new' }
         format.json { render json: @function.errors, status: :unprocessable_entity }

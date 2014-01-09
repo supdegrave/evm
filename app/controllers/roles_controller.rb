@@ -4,7 +4,7 @@ class RolesController < ApplicationController
   # GET /roles
   # GET /roles.json
   def index
-    @roles = Role.where(resource_id: nil, resource_type: nil) # only get root roles, not user roles 
+    @roles = root_roles # only get root roles, not user roles 
   end
 
   # GET /roles/1
@@ -30,7 +30,7 @@ class RolesController < ApplicationController
     respond_to do |format|
       if @role.save
         format.html { redirect_to @role, notice: 'Role was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @role }
+        format.json { render json: root_roles, status: :created, location: @role }
       else
         format.html { render action: 'new' }
         format.json { render json: @role.errors, status: :unprocessable_entity }
@@ -71,5 +71,9 @@ class RolesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def role_params
       params.require(:role).permit(:name)
+    end
+    
+    def root_roles
+      Role.where(resource_id: nil, resource_type: nil)
     end
 end

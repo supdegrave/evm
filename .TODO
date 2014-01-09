@@ -1,13 +1,12 @@
 * new migration: add "is_functional" bit to Role, default to true
   - seed data: do two separate role inserts: 
-    CORE_ROLES (admin, Board Member)
+    CORE_ROLES (admin, Board Member) - is_functional = false
     FUNCTIONAL_ROLES (all the rest)
 
 * seed data: insert existing functions from `2013 Leads List spreadsheet`? 
   
 admin.js.coffee
 * Update functions / roles lists when new items are added
-  - push functions and roles into AdminData, bind selects 
 * myModal delete 
 * move hard-coded ["admin", "Board Member"] to external js file to allow configuration
   - js file should simply assign an array of strings to variable
@@ -56,3 +55,8 @@ var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { str = "<li>";
 
 
 for (msg in xhr.responseJSON) xhr.responseJSON[msg]
+
+# FFS why does coffeescript turn for..in into a regular for loop? 
+# for msg in xhr.responseJSON 
+#   modalError.append(xhr.responseJSON[msg] + "<br/>")
+
