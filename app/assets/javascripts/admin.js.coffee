@@ -11,15 +11,19 @@ AdminData = {
 (() -> 
   $.ajax {
     url: "/functions.json"
-    success: (json) => AdminData.Functions = json
+    success: (json) => initCollection AdminData.Functions, json, selFunc
     error: (xhr, status) => console.log xhr, status
   }
   $.ajax {
     url: "/roles.json"
-    success: (json) => AdminData.Roles = json
+    success: (json) => initCollection AdminData.Roles, json, selRole
     error: (xhr, status) => console.log xhr, status
   }
 )()
+
+initCollection = (collection, json, select) -> 
+  collection = json
+  select.empty().append( "<option/>" ).append( collection.map((obj) -> "<option value='" + obj.id + "'>" + obj.name + "</option>") )
 
 
 # 
@@ -52,7 +56,7 @@ $("button#add-role").click (evt) ->
   if optRole.val().length # do not allow blank role
     role = optRole.text()
     func = if optFunc.val().length then optFunc.val() else if selFunc.prop("disabled") then "" else null 
-        
+    
     unless func == null
       $.ajax({
         url: "/admin/add_role"
@@ -106,7 +110,6 @@ resetModal = () ->
 # modal dialog closed 
 # 
 $(document).on 'closed', '[data-reveal]', () ->
-  # console.log "closed"
   AdminData.SelectedUser = null
   resetModalSelects()
   $("div#modal-error").empty().hide()
@@ -128,11 +131,6 @@ handleAjaxResponse = (model) ->
       AdminData.UserData[new_user_data.userId] = new_user_data.userRoles
       bindRoleEditEvents()
       $('#myModal').foundation({bindings: 'events'});     
-      
-    # HACK: this is terrible, 
-    # but temporary until I figure out how to dynamically bind modal clickers
-    # and move to databound roles / functions display in modal
-    # location.reload()
   )
 
   modelForm.on('ajax:error', (e, xhr, status, error) -> 
@@ -168,7 +166,6 @@ bindRoleEditEvents()
 # 
 # show list of roles for given user 
 # 
-# showRoleList = (list, modal = false) -> 
 showRoleList = (userId, modal = false) -> 
   list = if modal then $("#myModal .modal-user-roles") else $("ul.user-roles[data-user-id='" + userId + "']") 
   listItems = []
