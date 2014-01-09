@@ -61,9 +61,9 @@
   %h4 Add Job Role
   #modal-error 
   %h5 Function 
-  = select_tag "new-function" #, options_from_collection_for_select(@functions, "id", "name"), include_blank: true
+  = select_tag "new-function"
   %h5 Role 
-  = select_tag "new-role" #, options_from_collection_for_select(@roles, "id", "name"), include_blank: true
+  = select_tag "new-role" 
   = button_tag "Add", id: "add-role"
   = button_tag "Cancel", id: "cancel-add-role"
   %a.close-reveal-modal &#215;
