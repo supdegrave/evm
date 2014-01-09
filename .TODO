@@ -1,9 +1,14 @@
-* new migrations
-  - insert existing functions from `2013 Leads List spreadsheet`? 
+* new migration: add "is_functional" bit to Role, default to true
+  - seed data: do two separate role inserts: 
+    CORE_ROLES (admin, Board Member)
+    FUNCTIONAL_ROLES (all the rest)
+
+* seed data: insert existing functions from `2013 Leads List spreadsheet`? 
   
 admin.js.coffee
 * Update functions / roles lists when new items are added
   - push functions and roles into AdminData, bind selects 
+* myModal delete 
 * move hard-coded ["admin", "Board Member"] to external js file to allow configuration
   - js file should simply assign an array of strings to variable
   - update selRole.change handler to set that variable to [] if null / undefined

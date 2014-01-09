@@ -4,7 +4,33 @@
 AdminData = {
   SelectedUser: null
   UserData: {}
+  Functions: null
+  Roles: null
 }
+
+(() -> 
+  $.ajax {
+    url: "/functions.json"
+    type: "GET"
+    dataType: "json"
+    success: (json) =>
+      AdminData.Functions = json
+      console.log AdminData.Functions
+    error: (xhr, status) =>
+      console.log xhr, status
+  }
+  $.ajax {
+    url: "/roles.json"
+    type: "GET"
+    dataType: "json"
+    success: (json) =>
+      AdminData.Roles = json
+      console.log AdminData.Roles
+    error: (xhr, status) =>
+      console.log xhr, status
+  }
+)()
+
 
 # 
 # modal dialog select elements 
