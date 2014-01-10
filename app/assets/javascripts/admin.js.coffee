@@ -8,26 +8,26 @@ AdminData = {
   Roles: null
 }
 
-(() -> 
-  $.ajax {
-    url: "/functions.json"
-    success: (json) => initCollection "Function", json
-    error: (xhr, status) => console.log xhr, status
-  }
-  $.ajax {
-    url: "/roles.json"
-    success: (json) => initCollection "Role", json
-    error: (xhr, status) => console.log xhr, status
-  }
-)()
+$.ajax {
+  url: "/functions.json"
+  success: (json) => initCollection "Function", json
+  error: (xhr, status) => console.log xhr, status
+}
+$.ajax {
+  url: "/roles.json"
+  success: (json) => initCollection "Role", json
+  error: (xhr, status) => console.log xhr, status
+}
 
-initCollection = (collectionName, json) -> 
-  collection = AdminData[collectionName.concat('s')] = json
-  $("#new-".concat(collectionName.toLowerCase()))
-    .empty()
-    .append( "<option/>" )
-    .append( collection.map((obj) -> "<option value='" + obj.id + "'>" + obj.name + "</option>") )
+initCollection = (collectionName, json) -> AdminData[collectionName.concat('s')] = json
 
+# 
+# databind tables / lists 
+# 
+functions_table = rivets.bind $("#functions_table"), {data: AdminData}
+roles_table = rivets.bind $("#roles_table"), {data: AdminData}
+new_functions = rivets.bind $("#new-function"), {data: AdminData}
+new_roles = rivets.bind $("#new-role"), {data: AdminData}
 
 # 
 # modal dialog select elements 
@@ -119,6 +119,7 @@ $(document).on 'closed', '[data-reveal]', () ->
 handleAjaxResponse = (model) -> 
   $("#new_" + model)
     .on "ajax:success", (e, data, status, xhr) -> 
+      # console.log $(e.target).siblings('input').val
       form_row = $(e.target).parent()
       form_row.find('input').val(String.empty) 
       
@@ -131,8 +132,6 @@ handleAjaxResponse = (model) ->
       else
         collectionName = e.target.id.slice(4,5).toUpperCase().concat(e.target.id.slice(5))
         initCollection collectionName, data
-        form_row.siblings().remove()
-        form_row.before(data.map (obj) -> "<tr><td>" + obj.name + "</td></tr>")
     .on 'ajax:error', (e, xhr, status, error) -> console.log e, xhr, status, error
   
 handleAjaxResponse "user"

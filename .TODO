@@ -1,3 +1,5 @@
+* data binding for selects, user/function/role lists, user's assigned roles 
+
 * new migration: add "is_functional" bit to Role, default to true
   - seed data: do two separate role inserts: 
     CORE_ROLES (admin, Board Member) - is_functional = false
@@ -6,7 +8,6 @@
 * seed data: insert existing functions from `2013 Leads List spreadsheet`? 
   
 admin.js.coffee
-* Update functions / roles lists when new items are added
 * myModal delete 
 * move hard-coded ["admin", "Board Member"] to external js file to allow configuration
   - js file should simply assign an array of strings to variable
@@ -17,7 +18,6 @@ admin.js.coffee
 app/views/admin/index.html.haml:
 * add error-handling display for Users, Functions, Roles 
 * determine why having multiple input fields blocks submit-on-return (email/first_name/last_name)
-* background highlight for admin and Board Member - doesn't work on Chrome
 
 app/views/functions/_admin_edit.html.haml:
 * uncomment delete link when ready to wire up ajax return 
@@ -44,19 +44,6 @@ admin_controller.rb
 delete from users where id > 44; delete from roles where id > 161; delete from functions where id > 15; delete from users_roles where user_id > 44; -- delete from users_roles where role_id > 157; 
 select * from roles; select * from users; select * from users_roles;
 
-# ##### COMPARE STRING CONCAT SPEED
-var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { "".length } console.log(new Date() - start); 
-var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { 0 == "".length } console.log(new Date() - start);
-var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { "".match(/^$/) } console.log(new Date() - start); 
-var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { Boolean("") } console.log(new Date() - start); 
-
-var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { listItem = ["<li>"]; listItem.push("function"); listItem.push(" "); listItem.push("role"); listItem.push(" <span class='delete-role'>[delete]</span>"); listItem.push("</li>"); listItem.join(""); } console.log(new Date() - start); 
-var start = new Date(); for (var inx = 0; inx < 10000000; inx++) { str = "<li>"; str += "function"; str += " "; str += "role"; str += " <span class='delete-role'>[delete]</span>"; str += "</li>"; } console.log(new Date() - start); 
-
-
-for (msg in xhr.responseJSON) xhr.responseJSON[msg]
-
 # FFS why does coffeescript turn for..in into a regular for loop? 
 # for msg in xhr.responseJSON 
 #   modalError.append(xhr.responseJSON[msg] + "<br/>")
-

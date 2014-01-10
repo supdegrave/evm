@@ -30,15 +30,17 @@
       %thead
         %tr
           %th Function
-      %tbody
-        = render partial: 'functions/admin_edit', collection: @functions, as: :function 
+      %tbody#functions_table
+        %tr(rv-each-function="data.Functions")
+          %td {function.name}
+      %tfoot
         %tr
           = simple_form_for(@new_function, remote: true, html: {data: {type: :json}}) do |f|
             %td
               .row.collapse
                 .large-8.columns
                   = f.input_field :name, label: false, placeholder: 'Function Name', required: true
-  
+
   .large-6.columns
     -# TODO: add error-handling display for Roles 
     %h3 Roles 
@@ -46,8 +48,10 @@
       %thead
         %tr
           %th Role
-      %tbody
-        = render partial: 'roles/admin_edit', collection: @roles, as: :role 
+      %tbody#roles_table
+        %tr(rv-each-role="data.Roles")
+          %td {role.name}
+      %tfoot
         %tr
           = simple_form_for(@new_role, remote: true, html: {data: {type: :json}}) do |f|
             %td
@@ -61,9 +65,13 @@
   %h4 Add Job Role
   #modal-error 
   %h5 Function 
-  = select_tag "new-function"
+  %select#new-function
+    %option
+    %option(rv-each-function="data.Functions" value="{function.id}") {function.name}
   %h5 Role 
-  = select_tag "new-role" 
+  %select#new-role
+    %option
+    %option(rv-each-role="data.Roles" value="{role.id}") {role.name}
   = button_tag "Add", id: "add-role"
   = button_tag "Cancel", id: "cancel-add-role"
   %a.close-reveal-modal &#215;

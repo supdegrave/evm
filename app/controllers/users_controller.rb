@@ -1,6 +1,17 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!
 
+  # GET /users
+  # GET /users.json
+  def index
+    @users = User.all
+    respond_to do |format|
+      format.html { redirect_to "/" }
+      format.json {  }
+    end
+  end
+
+
   # POST /users
   # POST /users.json
   def create

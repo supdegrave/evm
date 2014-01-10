@@ -9,12 +9,18 @@
 //
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
-//
+
 //= require jquery
 //= require jquery_ujs
+
 // Note: Foundation 5 won't work with turbolinks
 //= require foundation
-//= require_tree .
+
+//= require rivets.min
+
+// = require_tree .
+
+
 $(function() {
   $(document).foundation();
 });
