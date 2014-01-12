@@ -1,5 +1,3 @@
-* data binding for user lists, user's assigned roles 
-
 * new migration: add "is_functional" bit to Role, default to true
   - seed data: do two separate role inserts: 
     CORE_ROLES (admin, Board Member) - is_functional = false

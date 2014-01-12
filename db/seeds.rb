@@ -9,7 +9,12 @@
 # See http://railsapps.github.io/rails-environment-variables.html
 
 puts 'ROLES'
-YAML.load(ENV['ROLES']).each do |role|
+YAML.load(ENV['CORE_ROLES']).each do |role|
+  Role.create(name: role, is_functional: false) if Role.find_by(name: role).nil? 
+  puts 'role: ' << role
+end
+
+YAML.load(ENV['FUNCTIONAL_ROLES']).each do |role|
   Role.find_or_create_by_name(role)
   puts 'role: ' << role
 end
