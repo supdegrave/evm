@@ -1,19 +1,11 @@
-* new migration: add "is_functional" bit to Role, default to true
-  - seed data: do two separate role inserts: 
-    CORE_ROLES (admin, Board Member) - is_functional = false
-    FUNCTIONAL_ROLES (all the rest)
-
 * seed data: insert existing functions from `2013 Leads List spreadsheet`? 
   
 admin.js.coffee
 * myModal delete 
-* change json response to return users as {id: {UserData}, ...} 
-  rather than an array of objects? 
+* change json response to return users as {id: {UserData}, ...} rather than an array of objects? 
   then use property indexing rather than loop 
 * remove hard-coded ["admin", "Board Member"] 
-  - include "core_roles" bit in Role via new migration 
-  - then change application.yml to have CORE_ROLES and FUNCTION_ROLES
-  - and seeds.rb data loading 
+  - use new is_functional bit field instead 
 
 app/views/admin/index.html.haml:
 * add error-handling display for Users, Functions, Roles 
