@@ -33,12 +33,12 @@ class AdminController < ApplicationController
   def add_role
     user_params = params[:user]
     user = User.find(user_params[:user_id])
-    role_name = user_params[:role_name]
+    role_name = user_params[:role]
     
-    if user_params[:function_id].nil? # role only, no function (ie: admin, Board Member)
+    if user_params[:function].nil? # role only, no function (ie: admin, Board Member)
       user.grant role_name      
     else
-      function = Function.find(user_params[:function_id]) 
+      function = Function.find_by(name: user_params[:function]) 
       
       # is function-role already assigned?
       if !function.roles.find_by(name: role_name).nil? 

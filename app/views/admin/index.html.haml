@@ -7,8 +7,18 @@
       %th Name
       %th Roles
       %th
-  %tbody
-    = render partial: 'users/admin_edit', collection: @users, as: :user
+  %tbody#users_table
+    %tr(rv-each-user="data.Users")
+      %td {user.email}
+      %td {user.name}
+      %td.role-edit(onmouseover="")
+        %span(data-user-id="") 
+          edit 
+          %span.hidden {user.id}
+        %ul.user-roles
+          %li(rv-each-role="user.functions_roles") {role.function} {role.role}
+      -# = link_to("Delete user", user_path(user), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-mini') unless user == current_user
+  %tfoot
     %tr 
       = simple_form_for(@new_user, url: '/admin#invitation', remote: true, html: {data: {type: :json}}) do |f|
         %td{colspan: 4}
@@ -26,7 +36,7 @@
   .large-6.columns
     -# TODO: add error-handling display for Functions 
     %h3 Functions
-    %table{style: "width:100%;"}
+    %table.full-width
       %thead
         %tr
           %th Function
@@ -44,7 +54,7 @@
   .large-6.columns
     -# TODO: add error-handling display for Roles 
     %h3 Roles 
-    %table{style: "width:100%;"}
+    %table.full-width
       %thead
         %tr
           %th Role
@@ -62,16 +72,17 @@
 #myModal.reveal-modal.small(data-reveal)
   %h4 Current Job Roles
   %ul.modal-user-roles
+    / %li(rv-each-role="data.functions_roles") {role.function} {role.role}
   %h4 Add Job Role
   #modal-error 
   %h5 Function 
   %select#new-function
     %option
-    %option(rv-each-function="data.Functions" value="{function.id}") {function.name}
+    %option(rv-each-function="data.Functions") {function.name}
   %h5 Role 
   %select#new-role
     %option
-    %option(rv-each-role="data.Roles" value="{role.id}") {role.name}
+    %option(rv-each-role="data.Roles") {role.name}
   = button_tag "Add", id: "add-role"
   = button_tag "Cancel", id: "cancel-add-role"
   %a.close-reveal-modal &#215;

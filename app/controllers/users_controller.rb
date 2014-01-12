@@ -1,13 +1,12 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!
 
-  # GET /users
+  # GET /users # redirect to home page 
   # GET /users.json
   def index
-    @users = User.all
     respond_to do |format|
       format.html { redirect_to "/" }
-      format.json {  }
+      format.json { @users = User.all }
     end
   end
 
@@ -47,7 +46,7 @@ class UsersController < ApplicationController
     elsif current_user.has_role? :admin
       admin_update user
     else 
-      redirect_to home_path, message: 'Not authorized to edit user.'
+      redirect_to "/", message: 'Not authorized to edit user.'
     end
   end
     
@@ -68,7 +67,7 @@ class UsersController < ApplicationController
     strong_params = params.require(:user).permit(:first_name, :last_name, :email, :playa_name, :skype_id, :emergency_contact, :emergency_contact_relation, :emergency_contact_phone, :emergency_contact_email, :medical_concerns)
     
     if user.update_attributes(strong_params)
-      redirect_to user_path(user), :notice => "User updated."
+      redirect_to user_path(user)
     else
       redirect_to user_path(user), :alert => "Unable to update user."
     end 
@@ -79,7 +78,7 @@ class UsersController < ApplicationController
     strong_params = params.require(:user).permit(:email, :first_name, :last_name)
   
     if user.update_attributes(strong_params)
-      redirect_to admin_path, :notice => "User updated."
+      redirect_to admin_path
     else
       redirect_to admin_path, :alert => "Unable to update user."
     end

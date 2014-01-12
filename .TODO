@@ -1,4 +1,4 @@
-* data binding for selects, user/function/role lists, user's assigned roles 
+* data binding for user lists, user's assigned roles 
 
 * new migration: add "is_functional" bit to Role, default to true
   - seed data: do two separate role inserts: 
@@ -9,11 +9,13 @@
   
 admin.js.coffee
 * myModal delete 
-* move hard-coded ["admin", "Board Member"] to external js file to allow configuration
-  - js file should simply assign an array of strings to variable
-  - update selRole.change handler to set that variable to [] if null / undefined
-  - alternately, update Role to include "core_roles" bit
-    - then change application.yml to have CORE_ROLES and FUNCTION_ROLES
+* change json response to return users as {id: {UserData}, ...} 
+  rather than an array of objects? 
+  then use property indexing rather than loop 
+* remove hard-coded ["admin", "Board Member"] 
+  - include "core_roles" bit in Role via new migration 
+  - then change application.yml to have CORE_ROLES and FUNCTION_ROLES
+  - and seeds.rb data loading 
 
 app/views/admin/index.html.haml:
 * add error-handling display for Users, Functions, Roles 
