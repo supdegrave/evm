@@ -51,12 +51,12 @@ selRole.change () ->
 # 'add role' button onclick handler
 #
 $("button#add-role").click (evt) -> 
-  optRole = selRole.children().filter(":selected") 
-  optFunc = selFunc.children().filter(":selected") 
+  optRole = selRole.children(":selected") 
+  optFunc = selFunc.children(":selected") 
   
   if optRole.val().length # do not allow blank role
     role = optRole.text()
-    func = if optFunc.text().length then optFunc.text() else if selFunc.prop("disabled") then "" else null 
+    func = if !AppData.Role(role).is_functional then "" else optFunc.text() || null 
         
     unless func == null
       $.ajax({
@@ -66,7 +66,7 @@ $("button#add-role").click (evt) ->
         data: {
           user: {
             user_id: AppData.SelectedUser
-            function: func if func.length
+            function: func if func 
             role: role
           }
         }
@@ -138,6 +138,5 @@ $('#users_table').on 'DOMNodeInserted', (e) ->
     target = $(evt.target).hide()
     AppData.SelectedUser = parseInt(target.find('span').text())
     AppData.User(AppData.SelectedUser).functions_roles.forEach (f_r) ->
-      content = ["<li>", (f_r.function || ""), f_r.role, "</li>"]
-      rolesList.append(content.join(" "))
+      rolesList.append ["<li>", (f_r.function || ""), f_r.role, "</li>"].join(" ")
     $('#myModal').foundation('reveal', 'open')

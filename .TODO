@@ -1,11 +1,9 @@
 * seed data: insert existing functions from `2013 Leads List spreadsheet`? 
+* delete functional roles from user (on user page)
   
 admin.js.coffee
-* myModal delete 
 * change json response to return users as {id: {UserData}, ...} rather than an array of objects? 
   then use property indexing rather than loop 
-* remove hard-coded ["admin", "Board Member"] 
-  - use new is_functional bit field instead 
 
 app/views/admin/index.html.haml:
 * add error-handling display for Users, Functions, Roles 

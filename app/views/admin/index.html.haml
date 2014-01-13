@@ -72,7 +72,7 @@
 #myModal.reveal-modal.small(data-reveal)
   %h4 Current Job Roles
   %ul.modal-user-roles
-    / %li(rv-each-role="data.functions_roles") {role.function} {role.role}
+    / list populated by click handler inside [[ $('#users_table').on 'DOMNodeInserted' ]]
   %h4 Add Job Role
   #modal-error 
   %h5 Function 
