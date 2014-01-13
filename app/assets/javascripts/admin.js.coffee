@@ -5,6 +5,9 @@ AppData = {
   SelectedUser: null
   Functions: null
   Roles: null
+  Role: (name) -> 
+    for role in this.Roles 
+      return role if name == role.name 
   Users: null
   User: (id) -> 
     for user in this.Users
@@ -37,10 +40,11 @@ rolesList = $('ul.modal-user-roles')
 # 
 # role select onchange handler
 # 
-selRole.change (evt) ->
-  isNonFunctionRole = selRole.children().filter(":selected").text() in ["admin", "Board Member"]
-  selFunc.prop("disabled", isNonFunctionRole) 
-  selFunc.prop('selectedIndex', 0) if isNonFunctionRole
+selRole.change () ->
+  roleName = selRole.children(':selected').text()
+  isFunctionRole = AppData.Role(roleName).is_functional
+  selFunc.prop("disabled", !isFunctionRole) 
+  selFunc.prop('selectedIndex', 0) unless isFunctionRole
 
 
 # 
