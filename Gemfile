@@ -13,7 +13,8 @@ gem 'devise'
 gem 'devise_invitable'
 gem 'figaro'
 gem 'foundation-rails'
-# gem 'rivets-rails' # out of date, doesn't support straight JS object binding
+gem 'execjs'
+gem 'therubyracer', :platforms => :ruby
 gem 'haml-rails'
 gem 'rolify'
 gem 'simple_form'
